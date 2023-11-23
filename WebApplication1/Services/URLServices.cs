@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Text;
 using UrlShortener.entities;
 using UrlShorter.Data;
 using UrlShorter.Entities;
@@ -39,17 +34,32 @@ namespace UrlShorter.Services
 
         public string GuardarURL(string URLUser, string ShortURL, string? categoria, int IdUser)
         {
-            
+
 
             Url URLToCreate = new Url();
             URLToCreate.UrlLong = URLUser;
             URLToCreate.UrlShort = ShortURL;
             URLToCreate.IdUser = IdUser;
-            
-            if (categoria != null) 
-            { URLToCreate.IdCategoria = _context.Categoria.SingleOrDefault(u => u.Name == categoria).Id; }
-            else URLToCreate.IdCategoria = 1;
 
+
+            if (categoria != null)
+            {
+
+                try
+                {
+                    int IdCat = _context.Categoria.SingleOrDefault(u => u.Name == categoria).Id;
+                    URLToCreate.IdCategoria = IdCat;
+                }
+                catch
+                {
+                    int IdCat = 3;
+                    URLToCreate.IdCategoria = IdCat;
+                }
+
+            }
+
+
+            else { URLToCreate.IdCategoria = 1; }
 
 
             _context.Urls.Add(URLToCreate);
@@ -61,21 +71,21 @@ namespace UrlShorter.Services
 
         public int SumarContador(string URLUser)
         {
-            Url URLToCreate = new Url();
+            Url UrlToCreate = new Url();
             if (URLUser.Length > 6)
-                URLToCreate = _context.Urls.SingleOrDefault(u => u.UrlLong == URLUser);
-            else { URLToCreate = _context.Urls.SingleOrDefault(u => u.UrlShort == URLUser); }
-            URLToCreate.contador++;
-            _context.Urls.Update(URLToCreate);
+                UrlToCreate = _context.Urls.SingleOrDefault(u => u.UrlLong == URLUser);
+            else { UrlToCreate = _context.Urls.SingleOrDefault(u => u.UrlShort == URLUser); }
+            UrlToCreate.contador++;
+            _context.Urls.Update(UrlToCreate);
             _context.SaveChanges();
 
-            return URLToCreate.contador;
+            return UrlToCreate.contador;
 
         }
 
         public List<string> GetUrlsPorUsuario(int IdUserClient)
         {
-            List<string> URLSPorUsuario = _context.Urls.Where(x=> x.IdUser == IdUserClient).Select(x=> x.UrlLong).ToList();
+            List<string> URLSPorUsuario = _context.Urls.Where(x => x.IdUser == IdUserClient).Select(x => x.UrlLong).ToList();
 
 
             return URLSPorUsuario;
@@ -86,8 +96,8 @@ namespace UrlShorter.Services
 
             string URLLong = _context.Urls.SingleOrDefault(x => x.UrlShort == URLCliente).UrlLong;
 
-            return URLLong ;
-        }
 
+            return URLLong;
+        }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Security.Claims;
 
 using UrlShorter.Data;
-
+using UrlShorter.Entities;
 using UrlShorter.Services;
 
 namespace UrlShorter.Controllers
@@ -61,7 +62,7 @@ namespace UrlShorter.Controllers
                     int contador = _services.SumarContador(URLUser);
                     return Ok(URLLong);
                 }
-                else return BadRequest("La URL no se encuentra en la  base de datos.");
+                else return Ok("La URL no se encuentra en la  base de datos.");
             }
 
 
@@ -104,11 +105,11 @@ namespace UrlShorter.Controllers
             {
                 if (_context.Urls.Any(u => u.UrlShort == URL))
                 {
-                    string URLLong = _services.GetURLLongForShort(URL);
+                    string UrlLong = _services.GetURLLongForShort(URL);
                     int contador = _services.SumarContador(URL);
-                    return Ok(URLLong);
+                    return Ok(UrlLong);
                 }
-                else return BadRequest("La URL no se encuentra en la  base de datos.");
+                else return Ok("La URL no se encuentra en la  base de datos.");
             }
 
 

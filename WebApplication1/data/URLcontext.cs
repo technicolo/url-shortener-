@@ -29,6 +29,12 @@ namespace UrlShorter.Data
                 Id = 2,
                 Name = "Diversion"
             };
+            Categoria SinCategoria = new Categoria()
+            {
+                Id = 3,
+                Name = "Sin-Categoria"
+            };
+
             User Usuario1 = new User()
             {
                 Id = 1,
